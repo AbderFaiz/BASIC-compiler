@@ -31,8 +31,8 @@ enum TokenType {
   LTEQ = 209,
   GT = 210,
   GTEQ = 211,
-  // UNKOWN
-  UNKOWN = 999
+  // UNKNOWN
+  UNKNOWN = 999
 };
 
 string token_name(TokenType t);
@@ -45,5 +45,6 @@ class Token{
   TokenType kind;
 
   public:
+  Token();
   Token(string tokenText, TokenType tokenKind);
 };

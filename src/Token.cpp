@@ -32,7 +32,7 @@ string token_name(TokenType t) {
       case LTEQ: return "LTEQ";
       case GT: return "GT";
       case GTEQ: return "GTEQ";
-      default: return "UNKOWN";
+      default: return "UNKNOWN";
   }
 }
 
@@ -66,10 +66,10 @@ TokenType token_type_from_name(const string &name) {
   if (name == "LTEQ") return LTEQ;
   if (name == "GT") return GT;
   if (name == "GTEQ") return GTEQ;
-  return UNKOWN; // Default case for unknown names
+  return UNKNOWN; // Default case for unknown names
 }
 
-
+Token::Token():text("UNKNOWN"), kind(UNKNOWN){}
 Token::Token(string tokenText, TokenType tokenKind):text(tokenText), kind(tokenKind) { }
 
 /* Checks if a string is a keyword, 

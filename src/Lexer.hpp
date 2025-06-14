@@ -1,13 +1,18 @@
+#include <iostream>
 #include "Token.hpp"
 
 class Lexer{
+  std::string source;
   char curChar;
-  int curPos;
+  long unsigned int curPos;
 
   public:
-  Lexer();
+  Lexer(std::string source);
   void nextChar();
-  void peek();
+  char peek();
+  void abort(std::string message);
+  void skipWhitespace();
+  void skipComment();
   Token getToken();
 
 };
