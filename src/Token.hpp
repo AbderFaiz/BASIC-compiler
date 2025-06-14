@@ -42,9 +42,10 @@ TokenType checkIfKeyword(string &tokenText);
 
 class Token{
   string text;
-  TokenType kind;
+  
 
   public:
+  TokenType kind;
   Token();
   Token(string tokenText, TokenType tokenKind);
 };

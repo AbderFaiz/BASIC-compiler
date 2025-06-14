@@ -63,6 +63,7 @@ Token Lexer::getToken()
     res = Token(std::string(1, this->curChar), TokenType::SLASH);
 
   else if (this->curChar == '=')
+  {
     if (peek() == '=')
     {
       lastChar = this->curChar;
@@ -73,8 +74,10 @@ Token Lexer::getToken()
     {
       res = Token(std::string(1, this->curChar), TokenType::EQ);
     }
+  }
 
-    else if (this->curChar == '>')
+  else if (this->curChar == '>')
+  {
     if (peek() == '=')
     {
       lastChar = this->curChar;
@@ -85,8 +88,10 @@ Token Lexer::getToken()
     {
       res = Token(std::string(1, this->curChar), TokenType::GT);
     }
+  }
 
-    else if (this->curChar == '<')
+  else if (this->curChar == '<')
+  {
     if (peek() == '=')
     {
       lastChar = this->curChar;
@@ -97,6 +102,8 @@ Token Lexer::getToken()
     {
       res = Token(std::string(1, this->curChar), TokenType::LT);
     }
+  }
 
+  nextChar();
   return res;
 }

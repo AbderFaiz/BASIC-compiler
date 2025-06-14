@@ -2,13 +2,15 @@
 #include "Lexer.hpp"
 
 
+std::string sample = "+-*/=+==><>=<=";
+
 int main()
 {
-  std::string if_instr = "IF";
-  std::string ident = "myvar";
-  std::cout << token_name(END_OF_FILE) << std::endl;
-  std::cout << token_name(token_type_from_name("NEWLINE")) << std::endl;
-  std::cout << token_name(checkIfKeyword(if_instr)) << std::endl;
-  std::cout << token_name(checkIfKeyword(ident)) << std::endl;
+  Lexer mylexer(sample);
+  Token t = mylexer.getToken();
+  while(t.kind != UNKNOWN){
+    std::cout << token_name(t.kind) << std::endl;
+    t = mylexer.getToken();
+  }
   return 0;
 }
