@@ -1,7 +1,7 @@
 #include <string>
 using std::string;
 
-enum class TokenType {
+enum TokenType {
   END_OF_FILE = -1,
   NEWLINE = 0,
   NUMBER = 1,
@@ -30,49 +30,85 @@ enum class TokenType {
   LT = 208,
   LTEQ = 209,
   GT = 210,
-  GTEQ = 211
+  GTEQ = 211,
+  // UNKOWN
+  UNKOWN = 999
 };
 
 string token_name(TokenType t) {
   switch (t) {
-      case TokenType::END_OF_FILE: return "END_OF_FILE";
-      case TokenType::NEWLINE: return "NEWLINE";
-      case TokenType::NUMBER: return "NUMBER";
-      case TokenType::IDENT: return "IDENT";
-      case TokenType::STRING: return "STRING";
+      case END_OF_FILE: return "END_OF_FILE";
+      case NEWLINE: return "NEWLINE";
+      case NUMBER: return "NUMBER";
+      case IDENT: return "IDENT";
+      case STRING: return "STRING";
       // Keywords
-      case TokenType::LABEL: return "LABEL";
-      case TokenType::GOTO: return "GOTO";
-      case TokenType::PRINT: return "PRINT";
-      case TokenType::INPUT: return "INPUT";
-      case TokenType::LET: return "LET";
-      case TokenType::IF: return "IF";
-      case TokenType::THEN: return "THEN";
-      case TokenType::ENDIF: return "ENDIF";
-      case TokenType::WHILE: return "WHILE";
-      case TokenType::REPEAT: return "REPEAT";
-      case TokenType::ENDWHILE: return "ENDWHILE";
+      case LABEL: return "LABEL";
+      case GOTO: return "GOTO";
+      case PRINT: return "PRINT";
+      case INPUT: return "INPUT";
+      case LET: return "LET";
+      case IF: return "IF";
+      case THEN: return "THEN";
+      case ENDIF: return "ENDIF";
+      case WHILE: return "WHILE";
+      case REPEAT: return "REPEAT";
+      case ENDWHILE: return "ENDWHILE";
       // Operators
-      case TokenType::EQ: return "EQ";
-      case TokenType::PLUS: return "PLUS";
-      case TokenType::MINUS: return "MINUS";
-      case TokenType::ASTERISK: return "ASTERISK";
-      case TokenType::SLASH: return "SLASH";
-      case TokenType::EQEQ: return "EQEQ";
-      case TokenType::NOTEQ: return "NOTEQ";
-      case TokenType::LT: return "LT";
-      case TokenType::LTEQ: return "LTEQ";
-      case TokenType::GT: return "GT";
-      case TokenType::GTEQ: return "GTEQ";
-      default: return "Unknown";
+      case EQ: return "EQ";
+      case PLUS: return "PLUS";
+      case MINUS: return "MINUS";
+      case ASTERISK: return "ASTERISK";
+      case SLASH: return "SLASH";
+      case EQEQ: return "EQEQ";
+      case NOTEQ: return "NOTEQ";
+      case LT: return "LT";
+      case LTEQ: return "LTEQ";
+      case GT: return "GT";
+      case GTEQ: return "GTEQ";
+      default: return "UNKOWN";
   }
 }
 
+TokenType token_type_from_name(const string &name) {
+  if (name == "END_OF_FILE") return END_OF_FILE;
+  if (name == "NEWLINE") return NEWLINE;
+  if (name == "NUMBER") return NUMBER;
+  if (name == "IDENT") return IDENT;
+  if (name == "STRING") return STRING;
+  // Keywords
+  if (name == "LABEL") return LABEL;
+  if (name == "GOTO") return GOTO;
+  if (name == "PRINT") return PRINT;
+  if (name == "INPUT") return INPUT;
+  if (name == "LET") return LET;
+  if (name == "IF") return IF;
+  if (name == "THEN") return THEN;
+  if (name == "ENDIF") return ENDIF;
+  if (name == "WHILE") return WHILE;
+  if (name == "REPEAT") return REPEAT;
+  if (name == "ENDWHILE") return ENDWHILE;
+  // Operators
+  if (name == "EQ") return EQ;
+  if (name == "PLUS") return PLUS;
+  if (name == "MINUS") return MINUS;
+  if (name == "ASTERISK") return ASTERISK;
+  if (name == "SLASH") return SLASH;
+  if (name == "EQEQ") return EQEQ;
+  if (name == "NOTEQ") return NOTEQ;
+  if (name == "LT") return LT;
+  if (name == "LTEQ") return LTEQ;
+  if (name == "GT") return GT;
+  if (name == "GTEQ") return GTEQ;
+  return UNKOWN; // Default case for unknown names
+}
+
+TokenType checkIfKeyword(string &tokenText);
+
 class Token{
   string text;
-  enum TokenType kind;
+  TokenType kind;
 
   public:
-  Token(string tokenText, enum TokenType tokenKind);
-  static enum TokenType checkIfKeyword(string tokenText);
+  Token(string tokenText, TokenType tokenKind);
 };
