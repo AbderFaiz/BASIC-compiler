@@ -146,6 +146,14 @@ Token Lexer::getToken()
     res = Token(tokText, TokenType::NUMBER);
   }
 
+  else if (isalpha(this->curChar)){
+    startPos = this->curPos;
+    while (isalnum(peek()))
+      nextChar();
+    tokText = this->source.substr(startPos, this->curPos - startPos + 1);
+    res = Token(tokText, checkIfKeyword(tokText));
+  }
+
   else if (this->curChar == '\n')
     res = Token(std::string(1, this->curChar), TokenType::NEWLINE);
 

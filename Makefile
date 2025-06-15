@@ -1,6 +1,6 @@
 CC = g++
 FLAGS = -Wall
-EXAMPLE = examples/arithmetic.basic
+EXAMPLE = examples/factorial
 
 all: test.out
 
