@@ -129,6 +129,23 @@ Token Lexer::getToken()
     res = Token(tokText, TokenType::STRING);
   }
 
+  else if (isdigit(this->curChar)){
+    startPos = this->curPos;
+    while (isdigit(peek()))
+      nextChar();
+    if (peek() == '.'){
+      nextChar();
+      while (isdigit(peek()))
+        nextChar();
+      if(isalpha(peek()))
+        abort("Illegal character in number.");
+    }
+    else if(isalpha(peek()))
+      abort("Illegal character in number.");
+    tokText = this->source.substr(startPos, this->curPos - startPos + 1);
+    res = Token(tokText, TokenType::NUMBER);
+  }
+
   else if (this->curChar == '\n')
     res = Token(std::string(1, this->curChar), TokenType::NEWLINE);
 

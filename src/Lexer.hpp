@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cctype>
 #include "Token.hpp"
 
 class Lexer{
