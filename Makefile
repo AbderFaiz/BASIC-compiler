@@ -1,5 +1,6 @@
 CC = g++
 FLAGS = -Wall
+EXAMPLE = examples/arithmetic.basic
 
 all: test.out
 
@@ -11,7 +12,7 @@ Lexer.o : src/Lexer.cpp src/Lexer.hpp
 
 test.out: src/main.cpp Token.o Lexer.o
 	$(CC) $(FLAGS) $^ -o $@
-	./$@
+	./$@ $(EXAMPLE)
 
 clean:
 	rm -f test.out *.o

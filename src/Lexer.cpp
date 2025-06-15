@@ -104,6 +104,13 @@ Token Lexer::getToken()
     }
   }
 
+  else if (this->curChar == '\n')
+    res = Token(std::string(1,this->curChar), TokenType::NEWLINE);
+  
+    else if (this->curChar == '\0')
+    res = Token(std::string(1,this->curChar), TokenType::END_OF_FILE);
+
+
   nextChar();
   return res;
 }

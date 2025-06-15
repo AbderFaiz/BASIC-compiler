@@ -83,3 +83,11 @@ TokenType checkIfKeyword(string &tokenText){
     return token_type;
   return TokenType::IDENT;
 }
+
+TokenType Token::get_kind() {
+  return this->kind;
+}
+
+string Token::get_text() {
+  return this->text;
+}
