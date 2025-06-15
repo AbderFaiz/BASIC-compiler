@@ -1,6 +1,6 @@
 #include "Lexer.hpp"
 
-Lexer::Lexer(std::string source) : source(source + '\n'), curChar(' '), curPos(-1)
+Lexer::Lexer(std::string &source) : source(source + '\n'), curChar(' '), curPos(-1)
 {
   nextChar();
 };
@@ -23,7 +23,7 @@ char Lexer::peek()
 
 void Lexer::abort(std::string message)
 {
-  std::cout << "Lexing error. " << message << std::endl;
+  std::cout << "Lexing error: " << message << std::endl;
   exit(1);
 }
 
@@ -45,6 +45,8 @@ void Lexer::skipComment()
 Token Lexer::getToken()
 {
   char lastChar;
+  long unsigned int startPos;
+  std::string tokText;
   Token res;
 
   skipWhitespace();
@@ -104,12 +106,34 @@ Token Lexer::getToken()
     }
   }
 
-  else if (this->curChar == '\n')
-    res = Token(std::string(1,this->curChar), TokenType::NEWLINE);
-  
-    else if (this->curChar == '\0')
-    res = Token(std::string(1,this->curChar), TokenType::END_OF_FILE);
+  else if (this->curChar == '!')
+  {
+    if (peek() == '=')
+    {
+      lastChar = this->curChar;
+      nextChar();
+      res = Token(std::string(1, lastChar) + this->curChar, TokenType::NOTEQ);
+    }
+    else
+    {
+      abort("Syntax Error: Expected !=, got !"+ std::string(1,peek()));
+    }
+  }
 
+  else if (this->curChar == '\"'){
+    nextChar();
+    startPos = this->curPos;
+    while (this->curChar != '\"')
+      nextChar();
+    tokText = this->source.substr(startPos, this->curPos - startPos);
+    res = Token(tokText, TokenType::STRING);
+  }
+
+  else if (this->curChar == '\n')
+    res = Token(std::string(1, this->curChar), TokenType::NEWLINE);
+
+  else if (this->curChar == '\0')
+    res = Token(std::string(1, this->curChar), TokenType::END_OF_FILE);
 
   nextChar();
   return res;

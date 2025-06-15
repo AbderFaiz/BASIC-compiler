@@ -7,7 +7,7 @@ class Lexer{
   long unsigned int curPos;
 
   public:
-  Lexer(std::string source);
+  Lexer(std::string &source);
   void nextChar();
   char peek();
   void abort(std::string message);
