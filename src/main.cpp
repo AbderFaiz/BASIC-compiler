@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "Lexer.hpp"
+#include "Parser.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -22,10 +22,7 @@ int main(int argc, char* argv[])
   std::string source = ss.str();
 
   Lexer mylexer(source);
-  Token t = mylexer.getToken();
-  while(t.get_kind() != END_OF_FILE){
-    std::cout << token_name(t.get_kind()) << ": " << t.get_text() << std::endl;
-    t = mylexer.getToken();
-  }
+  Parser myparser(mylexer);
+  myparser.program();
   return 0;
 }
