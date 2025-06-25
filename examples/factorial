@@ -1,12 +1,14 @@
+LABEL START
 PRINT "Enter a number to compute its factorial:"
 INPUT n
 PRINT ""
 
 LET result = 1
+
 WHILE n > 1 REPEAT
     LET result = result * n
     LET n = n - 1
 ENDWHILE
-
 PRINT "The factorial is:"
 PRINT result
+GOTO START

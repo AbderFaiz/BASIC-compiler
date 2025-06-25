@@ -1,9 +1,13 @@
 #include "Lexer.hpp"
+#include "Symbol.hpp"
+#include <set>
 
 class Parser {
   Lexer lexer;
   Token curToken;
   Token peekToken;
+  std::set<Symbol> symbols;
+
 
   public:
   Parser(Lexer lexer);
@@ -21,6 +25,6 @@ class Parser {
   void term();
   void unary();
   void primary();
-  void ident();
+  void ident(SymbolKind k);
   void nl();
 };

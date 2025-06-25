@@ -1,6 +1,6 @@
 #include "Parser.hpp"
 
-Parser::Parser(Lexer lexer) : lexer(lexer), curToken(Token()), peekToken(Token())
+Parser::Parser(Lexer lexer) : lexer(lexer), curToken(Token()), peekToken(Token()), symbols({})
 {
   nextToken();
   nextToken();
@@ -34,34 +34,53 @@ void Parser::abort(std::string message)
   exit(1);
 }
 
-bool Parser::isComparisonOperator(){
-  return (checkToken(TokenType::GT)   || 
+bool Parser::isComparisonOperator()
+{
+  return (checkToken(TokenType::GT) ||
           checkToken(TokenType::GTEQ) ||
           checkToken(TokenType::EQEQ) ||
-          checkToken(TokenType::NOTEQ)||
+          checkToken(TokenType::NOTEQ) ||
           checkToken(TokenType::LTEQ) ||
-          checkToken(TokenType::LT)
-        );
+          checkToken(TokenType::LT));
 }
 
 void Parser::program()
 {
   std::cout << "PROGRAM" << std::endl;
-  while (checkToken(TokenType::NEWLINE)){
+  while (checkToken(TokenType::NEWLINE))
+  {
     nextToken();
   }
   while (!checkToken(TokenType::END_OF_FILE))
   {
     statement();
   }
+
+  for (const Symbol& sym : this->symbols) {
+    if (sym.sym_kind() == SymbolKind::LABEL_GOTOED){
+      Symbol label(sym.str(), SymbolKind::LABEL_DECLARATION);
+      if (this->symbols.find(label) == this->symbols.end()){
+        abort ("GOTO to an undeclared label "+sym.str());
+      }
+    }
+  }
+
+  Symbol label("TOTO", SymbolKind::LABEL_DECLARATION);
+  this->symbols.insert(label);
+  this->symbols.insert(label);
+  this->symbols.insert(label);
+  std::cout << "*** SYMB TABLE ***" << std::endl;
+  for (const Symbol& sym : this->symbols) {
+        std::cout << sym.str() << "-" << sym.sym_kind() << std::endl;
+  }
 }
 
 void Parser::statement()
 {
-  std::cout << "STATEMENT" << std::endl;
   // "PRINT" (expression | string)
   if (checkToken(TokenType::PRINT))
   {
+    std::cout << "STATEMENT-PRINT" << std::endl;
     nextToken();
 
     if (checkToken(TokenType::STRING))
@@ -77,6 +96,7 @@ void Parser::statement()
   // "IF" comparison "THEN" nl {statement} "ENDIF"
   else if (checkToken(TokenType::IF))
   {
+    std::cout << "STATEMENT-IF" << std::endl;
     nextToken();
     comparison();
     match(TokenType::THEN);
@@ -91,6 +111,7 @@ void Parser::statement()
   // "WHILE" comparison "REPEAT" nl {statement nl} "ENDWHILE"
   else if (checkToken(TokenType::WHILE))
   {
+    std::cout << "STATEMENT-WHILE" << std::endl;
     nextToken();
     comparison();
     match(TokenType::REPEAT);
@@ -103,31 +124,40 @@ void Parser::statement()
   }
 
   // "LABEL" ident
-  else if (checkToken(TokenType::LABEL)){
+  else if (checkToken(TokenType::LABEL))
+  {
+    std::cout << "STATEMENT-LABEL" << std::endl;
     nextToken();
-    ident();
+    ident(SymbolKind::LABEL_DECLARATION);
   }
 
   // "GOTO" ident
-  else if (checkToken(TokenType::GOTO)){
+  else if (checkToken(TokenType::GOTO))
+  {
+    std::cout << "STATEMENT-GOTO" << std::endl;
     nextToken();
-    ident();
+    ident(SymbolKind::LABEL_GOTOED);
   }
   // "LET" ident "=" expression
-  else if (checkToken(TokenType::LET)){
+  else if (checkToken(TokenType::LET))
+  {
+    std::cout << "STATEMENT-ASSIGN" << std::endl;
     nextToken();
-    ident();
+    ident(SymbolKind::VARIABLE);
     match(TokenType::EQ);
     expression();
   }
   // "INPUT" ident
-  else if (checkToken(TokenType::INPUT)){
+  else if (checkToken(TokenType::INPUT))
+  {
+    std::cout << "STATEMENT-INPUT" << std::endl;
     nextToken();
-    ident();
+    ident(SymbolKind::VARIABLE);
   }
 
-  else{
-    abort("Invalid statement at "+ (this->curToken).get_text() + "(" + token_name((this->curToken).get_kind()) + ")");
+  else
+  {
+    abort("Invalid statement at " + (this->curToken).get_text() + "(" + token_name((this->curToken).get_kind()) + ")");
   }
 
   nl();
@@ -137,47 +167,64 @@ void Parser::comparison()
 {
   std::cout << "COMPARISON" << std::endl;
   expression();
-  if (isComparisonOperator()){
+  if (isComparisonOperator())
+  {
     nextToken();
     expression();
   }
-  else {
-    abort("Expected comparison operator at: "+(this->curToken).get_text());
+  else
+  {
+    abort("Expected comparison operator at: " + (this->curToken).get_text());
   }
 
-  while (isComparisonOperator()){
+  while (isComparisonOperator())
+  {
     nextToken();
     expression();
   }
 }
 
-void Parser::term(){
+void Parser::term()
+{
   std::cout << "TERM" << std::endl;
   unary();
-  while(checkToken(TokenType::ASTERISK) || checkToken(TokenType::SLASH)){
+  while (checkToken(TokenType::ASTERISK) || checkToken(TokenType::SLASH))
+  {
     nextToken();
     unary();
   }
 }
 
-void Parser::unary(){
+void Parser::unary()
+{
   std::cout << "UNARY" << std::endl;
-  if(checkToken(TokenType::PLUS) || checkToken(TokenType::MINUS)){
+  if (checkToken(TokenType::PLUS) || checkToken(TokenType::MINUS))
+  {
     nextToken();
   }
   primary();
 }
 
-void Parser::primary(){
-  std::cout << "PRIMARY" << " (" << (this->curToken).get_text() << ")"<< std::endl;
-  if(checkToken(TokenType::NUMBER)){
+void Parser::primary()
+{
+  std::cout << "PRIMARY" << " (" << (this->curToken).get_text() << ")" << std::endl;
+  if (checkToken(TokenType::NUMBER))
+  {
     nextToken();
   }
-  else if(checkToken(TokenType::IDENT)){
+  else if (checkToken(TokenType::IDENT))
+  {
+    const std::string identext = this->curToken.get_text();
+    Symbol tmp(identext, SymbolKind::VARIABLE);
+    if (this->symbols.find(tmp) == this->symbols.end())
+    {
+      abort("Underclared variable " + this->curToken.get_text());
+    }
     nextToken();
   }
-  else{
-    abort("Unexpected token at "+ (this->curToken).get_text());
+  else
+  {
+    abort("Unexpected token at " + (this->curToken).get_text());
   }
 }
 
@@ -185,16 +232,36 @@ void Parser::expression()
 {
   std::cout << "EXPRESSION" << std::endl;
   term();
-  while(checkToken(TokenType::PLUS) || checkToken(TokenType::MINUS)){
+  while (checkToken(TokenType::PLUS) || checkToken(TokenType::MINUS))
+  {
     nextToken();
     term();
   }
 }
 
-void Parser::ident()
+void Parser::ident(SymbolKind k)
 {
   std::cout << "IDENT" << std::endl;
+  const std::string identText = this->curToken.get_text();
   match(TokenType::IDENT);
+  Symbol curSymb(identText, k);
+  switch (k)
+  {
+  case LABEL_DECLARATION:
+    if (this->symbols.find(curSymb) != this->symbols.end())
+      abort("Label already exists " + identText);
+    this->symbols.insert(curSymb);
+    break;
+  case LABEL_GOTOED:
+    this->symbols.insert(curSymb);
+    break;
+  case VARIABLE:
+    std::cout << identText << std::endl;
+    this->symbols.insert(curSymb);
+    break;
+  default:
+    break;
+  }
 }
 
 void Parser::nl()
