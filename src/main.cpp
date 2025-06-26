@@ -22,7 +22,10 @@ int main(int argc, char* argv[])
   std::string source = ss.str();
 
   Lexer mylexer(source);
-  Parser myparser(mylexer);
+  Emitter* emitter = new Emitter("out.c");
+  Parser myparser(mylexer, emitter);
   myparser.program();
+  emitter->writeFile();
+  delete emitter;
   return 0;
 }

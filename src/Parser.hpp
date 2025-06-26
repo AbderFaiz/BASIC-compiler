@@ -1,16 +1,19 @@
+#include <set>
 #include "Lexer.hpp"
 #include "Symbol.hpp"
-#include <set>
+#include "Emitter.hpp"
+
 
 class Parser {
   Lexer lexer;
   Token curToken;
   Token peekToken;
   std::set<Symbol> symbols;
+  Emitter* emitter;
 
 
   public:
-  Parser(Lexer lexer);
+  Parser(Lexer lexer, Emitter *emitter);
   bool checkToken(TokenType kind);
   bool checkPeek(TokenType kind);
   void match(TokenType kind);
