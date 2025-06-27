@@ -92,7 +92,7 @@ void Parser::statement()
 
     if (checkToken(TokenType::STRING))
     {
-      this->emitter->emitLine("printf(\"" + this->curToken.get_text() + "\\n\")");
+      this->emitter->emitLine("printf(\"" + this->curToken.get_text() + "\\n\");");
       ;
       nextToken();
     }
@@ -164,6 +164,7 @@ void Parser::statement()
     match(TokenType::EQ);
     this->emitter->emit(" = ");
     expression();
+    this->emitter->emitLine(";");
   }
   // "INPUT" ident
   else if (checkToken(TokenType::INPUT))
@@ -175,7 +176,6 @@ void Parser::statement()
     ident(SymbolKind::VARIABLE);
     this->emitter->emitLine(")){");
     this->emitter->emitLine(identext + " = 0;");
-    this->emitter->emitLine("}");
     this->emitter->emitLine("scanf(\"\%*s\");\n}");
   }
 
@@ -193,6 +193,7 @@ void Parser::comparison()
   expression();
   if (isComparisonOperator())
   {
+    this->emitter->emit(this->curToken.get_text());
     nextToken();
     expression();
   }
@@ -203,6 +204,7 @@ void Parser::comparison()
 
   while (isComparisonOperator())
   {
+    this->emitter->emit(this->curToken.get_text());
     nextToken();
     expression();
   }
@@ -214,6 +216,7 @@ void Parser::term()
   unary();
   while (checkToken(TokenType::ASTERISK) || checkToken(TokenType::SLASH))
   {
+    this->emitter->emit(this->curToken.get_text());
     nextToken();
     unary();
   }
@@ -224,6 +227,7 @@ void Parser::unary()
   // std::cout << "UNARY" << std::endl;
   if (checkToken(TokenType::PLUS) || checkToken(TokenType::MINUS))
   {
+    this->emitter->emit(this->curToken.get_text());
     nextToken();
   }
   primary();
@@ -234,6 +238,7 @@ void Parser::primary()
   // std::cout << "PRIMARY" << " (" << (this->curToken).get_text() << ")" << std::endl;
   if (checkToken(TokenType::NUMBER))
   {
+    this->emitter->emit(this->curToken.get_text());
     nextToken();
   }
   else if (checkToken(TokenType::IDENT))
@@ -244,6 +249,7 @@ void Parser::primary()
     {
       abort("Underclared variable " + this->curToken.get_text());
     }
+    this->emitter->emit(identext);
     nextToken();
   }
   else
@@ -258,9 +264,11 @@ void Parser::expression()
   term();
   while (checkToken(TokenType::PLUS) || checkToken(TokenType::MINUS))
   {
+    this->emitter->emit(this->curToken.get_text());
     nextToken();
     term();
   }
+  //this->emitter->emitLine(";");
 }
 
 void Parser::ident(SymbolKind k)

@@ -11,4 +11,5 @@ WHILE n > 1 REPEAT
 ENDWHILE
 PRINT "The factorial is:"
 PRINT result
+PRINT ""
 GOTO START

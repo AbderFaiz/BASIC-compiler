@@ -22,11 +22,11 @@ Parser.o : src/Parser.cpp src/Parser.hpp Lexer.o Token.o Symbol.o Emitter.o
 test.out: src/main.cpp Token.o Lexer.o Parser.o Symbol.o Emitter.o
 	$(CC) $(FLAGS) $^ -o $@
 	./$@ $(EXAMPLE)
-	cat out.c
+	$(CC) out.c
 
-test: test.out
-	./$^ $(EXAMPLE)
-	cat out.c
+exec: test.out
+	./a.out
+	
 
 clean:
 	rm -f test.out *.o
