@@ -3,6 +3,8 @@ FLAGS = -Wall
 EXAMPLE = examples/factorial
 
 all: test.out
+	./$< $(EXAMPLE)
+	$(CC) out.c
 
 Token.o : src/Token.cpp src/Token.hpp
 	$(CC) -c $(FLAGS) $< 
@@ -21,12 +23,10 @@ Parser.o : src/Parser.cpp src/Parser.hpp Lexer.o Token.o Symbol.o Emitter.o
 
 test.out: src/main.cpp Token.o Lexer.o Parser.o Symbol.o Emitter.o
 	$(CC) $(FLAGS) $^ -o $@
-	./$@ $(EXAMPLE)
-	$(CC) out.c
 
 exec: test.out
 	./a.out
 	
 
 clean:
-	rm -f test.out *.o
+	rm -f *.o *.out *.c

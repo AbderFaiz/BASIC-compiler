@@ -1,0 +1,13 @@
+PRINT "Enter a number to reverse:"
+INPUT num
+PRINT ""
+
+LET reversed = 0
+WHILE num > 0 REPEAT
+    LET digit = num MOD 10
+    LET reversed = reversed * 10 + digit
+    LET num = num \ 10
+ENDWHILE
+
+PRINT "The reversed number is:"
+PRINT reversed
