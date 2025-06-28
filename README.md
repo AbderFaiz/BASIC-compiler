@@ -5,6 +5,11 @@ BASIC compiler into C
 
 This project is a compiler that translates BASIC source code into C.
 
+> **Note:**  
+> This repository includes an implementation in C++ of the ["Teeny Tiny Compiler" tutorial by Austin Henley](https://austinhenley.com/blog/teenytinycompiler1.html).  
+> The code follows the steps and concepts from the tutorial, providing a minimal compiler example for educational purposes.
+
+
 ## Features
 
 - Parses a subset of the BASIC language
